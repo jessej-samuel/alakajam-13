@@ -16,6 +16,7 @@ class Game(object):
     RED = (255, 0, 0)
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
+    VIOLET = (12,12,12)
 
     def __init__(self, gameStates=[]) -> None:
         # initialize pygame and create window
@@ -121,6 +122,8 @@ class PlayScreen(Game):
         pygame.mixer.music.load("assets/techno_bass02.ogg")
         pygame.mixer.music.set_volume(0.01)
         pygame.mixer.music.play(-1)
+        self.botty_image = pygame.image.load("assets/botty.png").convert()
+        self.botty_image.set_colorkey((82,82,82))
         # print("Playscreen here!")
         pass
 
@@ -144,8 +147,9 @@ class PlayScreen(Game):
         self.title_text = self.font.render("Play Screen", False, self.WHITE)
 
     def draw(self):
-        self.screen.fill((0, 0, 200))
+        self.screen.fill(self.VIOLET)
         self.screen.blit(self.title_text, (2, 2))
+        self.screen.blit(self.botty_image, (50,50))
         # print("MainScreen Drawn")
 
 
