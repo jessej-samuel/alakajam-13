@@ -207,16 +207,16 @@ class GameState:
         if "end" in self.state:
             return EndScreen()
 
-
-gamestates = [GameState("mainscreen"), GameState(
-    "playscreen"), GameState("endscreen")]
-state_id = 0
-game = gamestates[state_id].getState()
-while game.running:
-    if game.gotonext:
-        game.gotonext = False
-        state_id += 1
-        if state_id > (len(gamestates)-1):
-            state_id = 0
-        game = gamestates[state_id].getState()
-    game.run()
+if __name__ == '__main__':
+    gamestates = [GameState("mainscreen"), GameState(
+        "playscreen"), GameState("endscreen")]
+    state_id = 0
+    game = gamestates[state_id].getState()
+    while game.running:
+        if game.gotonext:
+            game.gotonext = False
+            state_id += 1
+            if state_id > (len(gamestates)-1):
+                state_id = 0
+            game = gamestates[state_id].getState()
+        game.run()
