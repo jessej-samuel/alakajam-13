@@ -1,3 +1,4 @@
+from os import strerror
 import pygame
 from pygame.locals import *
 from classes import *
@@ -119,6 +120,10 @@ class PlayScreen(Game):
         super().__init__()
         # self.frames = 0
         self.gotonext = False
+
+        # background
+        self.bg = pygame.image.load("assets/tilemap.png")
+
         # Music
         pygame.mixer.music.load("assets/techno_bass02.ogg")
         pygame.mixer.music.set_volume(0.01)
@@ -126,6 +131,9 @@ class PlayScreen(Game):
 
         # Botty stuff
         self.botty = Botty("assets/botty")
+
+        # BlueBot stuff
+        self.bluebots = [BlueBot("assets/blue_bot")]
 
         # print("Playscreen here!")
 
@@ -146,19 +154,28 @@ class PlayScreen(Game):
                     self.gotonext = True
             if event.type == MOUSEBUTTONDOWN:
                 self.keys_pressed = pygame.mouse.get_pressed()
+        self.bluebots.append(BlueBot("assets/blue_bot"))
         self.mouse_pos = pygame.mouse.get_pos()
         # print("MainScreen Events handled")
 
     def update(self):
         self.botty.update()
         self.title_text = self.font.render(
-            "Moving" if self.botty.moving.is_moving else "", False, self.WHITE)
+            "Moving" if self.botty.moving.is_moving else str(round(self.clock.get_fps())), False, self.WHITE)
         self.botty.moving.update()
+        for bluebot in self.bluebots:
+            if not bluebot.alive:
+                self.bluebots.remove(bluebot)
+                pass
+            bluebot.update()
 
     def draw(self):
-        self.screen.fill(self.VIOLET)
-        self.screen.blit(self.title_text, (2, 2))
+        # self.screen.fill(self.VIOLET)
+        self.screen.blit(self.bg,(0,0))
+        for bluebot in self.bluebots:
+            bluebot.draw(self.screen)
         self.botty.draw(self.screen)
+        self.screen.blit(self.title_text, (2, 2))
         # print("MainScreen Drawn")
 
 

@@ -2,6 +2,7 @@ import json
 import pygame
 from pygame.locals import *
 from types import SimpleNamespace
+import random
 
 # Parse JSON into an object with attributes corresponding to dict keys.
 # x = json.loads(data, object_hook=lambda d: SimpleNamespace(**d))
@@ -95,3 +96,30 @@ class Botty:
 
     def draw(self, screen: pygame.Surface):
         screen.blit(self.image, self.image.get_rect(center=self.pos))
+
+class BlueBot(Botty):
+
+    def __init__(self,filename:str):
+        super().__init__(filename)
+        self.pos = pygame.Vector2(random.random()*480,random.random()*480)
+        self.vel = pygame.Vector2(random.random()*2*random.choice([-1,1]),random.random()*2*random.choice([-1,1]))
+        self.alive = True
+    
+    def handle_events(self, event):
+        event = event
+        return 
+
+    def update(self):
+        # Animation
+        self.time += 1
+        if self.time >= self.duration:
+            self.time = 0
+            self.index += 1
+            if self.index > len(self.ss.sprites)-1:
+                self.index = 0
+        self.image: pygame.Surface = self.ss.sprites[self.index]
+
+        if self.pos.y < 0 or self.pos.y > 480 or self.pos.x < 0 or self.pos.x > 480:
+            self.alive = False
+
+        self.pos += self.vel
