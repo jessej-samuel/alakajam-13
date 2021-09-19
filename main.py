@@ -135,6 +135,10 @@ class PlayScreen(Game):
             # listening for the the X button at the top
             if event.type == pygame.QUIT:
                 self.running = False
+
+            # Botty events
+            self.botty.handle_events(event)
+
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     self.running = False
@@ -153,7 +157,7 @@ class PlayScreen(Game):
     def draw(self):
         self.screen.fill(self.VIOLET)
         self.screen.blit(self.title_text, (2, 2))
-        self.screen.blit(self.botty.image, (50,50))
+        self.botty.draw(self.screen)
         # print("MainScreen Drawn")
 
 
