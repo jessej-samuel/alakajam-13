@@ -151,7 +151,8 @@ class PlayScreen(Game):
 
     def update(self):
         self.botty.update()
-        self.title_text = self.font.render("Play Screen", False, self.WHITE)
+        self.title_text = self.font.render("Moving" if self.botty.moving.is_moving else "", False, self.WHITE)
+        self.botty.moving.update()
         
 
     def draw(self):

@@ -10,10 +10,13 @@ from types import SimpleNamespace
 class DirectionManager(object):
 
     def __init__(self):
-        self.up = False
-        self.down = False
-        self.left = False
-        self.right = False
+        self.up = self.down = self.left = self.right = self.is_moving = False
+    
+    def update(self):
+        if self.up or self.down or self.right or self.left:
+            self.is_moving = True
+        else:
+            self.is_moving = False
 
 class Spritesheet:
 
