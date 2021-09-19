@@ -16,7 +16,7 @@ class Game(object):
     RED = (255, 0, 0)
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
-    VIOLET = (12,12,12)
+    VIOLET = (12, 12, 12)
 
     def __init__(self, gameStates=[]) -> None:
         # initialize pygame and create window
@@ -151,9 +151,9 @@ class PlayScreen(Game):
 
     def update(self):
         self.botty.update()
-        self.title_text = self.font.render("Moving" if self.botty.moving.is_moving else "", False, self.WHITE)
+        self.title_text = self.font.render(
+            "Moving" if self.botty.moving.is_moving else "", False, self.WHITE)
         self.botty.moving.update()
-        
 
     def draw(self):
         self.screen.fill(self.VIOLET)
@@ -211,6 +211,7 @@ class GameState:
             return PlayScreen()
         if "end" in self.state:
             return EndScreen()
+
 
 if __name__ == '__main__':
     gamestates = [GameState("mainscreen"), GameState(
