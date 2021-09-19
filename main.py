@@ -1,6 +1,6 @@
-from typing import overload
 import pygame
 from pygame.locals import *
+from classes import *
 import random
 
 
@@ -8,7 +8,7 @@ class Game(object):
 
     WIDTH = 480
     HEIGHT = 480
-    FPS = 30
+    FPS = 60
 
     # Define Colors
     WHITE = (255, 255, 255)
@@ -117,15 +117,17 @@ class PlayScreen(Game):
 
     def __init__(self):
         super().__init__()
+        # self.frames = 0
         self.gotonext = False
         # Music
         pygame.mixer.music.load("assets/techno_bass02.ogg")
         pygame.mixer.music.set_volume(0.01)
         pygame.mixer.music.play(-1)
-        self.botty_image = pygame.image.load("assets/botty.png").convert()
-        self.botty_image.set_colorkey((82,82,82))
+
+        # Botty stuff
+        self.botty = Botty("assets/botty")
+
         # print("Playscreen here!")
-        pass
 
     def handle_events(self):
         # gets all the events which have occured till now and keeps tab of them.
@@ -144,12 +146,14 @@ class PlayScreen(Game):
         # print("MainScreen Events handled")
 
     def update(self):
+        self.botty.update()
         self.title_text = self.font.render("Play Screen", False, self.WHITE)
+        
 
     def draw(self):
         self.screen.fill(self.VIOLET)
         self.screen.blit(self.title_text, (2, 2))
-        self.screen.blit(self.botty_image, (50,50))
+        self.screen.blit(self.botty.image, (50,50))
         # print("MainScreen Drawn")
 
 
