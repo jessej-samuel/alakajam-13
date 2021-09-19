@@ -1,0 +1,36 @@
+{ "frames": [
+   {
+    "filename": "botty 0.aseprite",
+    "frame": { "x": 1, "y": 1, "w": 27, "h": 34 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 2, "y": 0, "w": 25, "h": 32 },
+    "sourceSize": { "w": 32, "h": 32 },
+    "duration": 300
+   },
+   {
+    "filename": "botty 1.aseprite",
+    "frame": { "x": 29, "y": 1, "w": 27, "h": 34 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 2, "y": 0, "w": 25, "h": 32 },
+    "sourceSize": { "w": 32, "h": 32 },
+    "duration": 300
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.x-dev",
+  "image": "botty.png",
+  "format": "RGBA8888",
+  "size": { "w": 56, "h": 35 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}
