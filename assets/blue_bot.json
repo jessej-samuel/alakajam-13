@@ -1,5 +1,6 @@
-{ "frames": {
-   "blue_bot 0.aseprite": {
+{ "frames": [
+   {
+    "filename": "blue_bot 0.aseprite",
     "frame": { "x": 1, "y": 1, "w": 18, "h": 18 },
     "rotated": false,
     "trimmed": false,
@@ -7,7 +8,8 @@
     "sourceSize": { "w": 16, "h": 16 },
     "duration": 100
    },
-   "blue_bot 1.aseprite": {
+   {
+    "filename": "blue_bot 1.aseprite",
     "frame": { "x": 20, "y": 1, "w": 18, "h": 18 },
     "rotated": false,
     "trimmed": false,
@@ -15,7 +17,7 @@
     "sourceSize": { "w": 16, "h": 16 },
     "duration": 100
    }
- },
+ ],
  "meta": {
   "app": "http://www.aseprite.org/",
   "version": "1.x-dev",
