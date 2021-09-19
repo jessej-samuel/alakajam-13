@@ -122,13 +122,23 @@ class Botty:
 
     def draw(self, screen: pygame.Surface):
         screen.blit(self.image, self.image.get_rect(center=self.pos))
+    
+    def shoot(self,mouse_pos:pygame.Vector2):
+        return Bullet(self.pos, mouse_pos)
 
+class Bullet(object):
+
+    def __init__(self,shooter_pos:pygame.Vector2,mouse_pos:pygame.Vector2):
+        self.damage = 2
+        self.vel = (mouse_pos - shooter_pos).scale_to_length(3)
 class BlueBot(Botty):
 
-    def __init__(self,filename:str):
+    def __init__(self,filename:str,player:Botty):
         super().__init__(filename)
+        self.player = player
         self.pos = pygame.Vector2(random.random()*480,random.random()*480)
-        self.vel = pygame.Vector2(random.random()*2*random.choice([-1,1]),random.random()*2*random.choice([-1,1]))
+        self.vel = pygame.Vector2((random.random()+0.01)*2*random.choice([-1,1]),(random.random()+0.01)*2*random.choice([-1,1]))
+        # self.vel = (player.pos - self.pos).scale_to_length(2)
         self.acc = pygame.Vector2(0.01,0.01)
         self.alive = True
     
@@ -149,5 +159,6 @@ class BlueBot(Botty):
         if self.pos.y < 0 or self.pos.y > 480 or self.pos.x < 0 or self.pos.x > 480:
             self.alive = False
 
+        self.vel = (self.player.pos - self.pos)
+        self.vel.scale_to_length(0.5)
         self.pos += self.vel
-        self.vel += self.acc

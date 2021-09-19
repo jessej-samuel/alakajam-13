@@ -134,7 +134,7 @@ class PlayScreen(Game):
         self.botty = Botty("assets/botty")
 
         # BlueBot stuff
-        self.bluebots = [BlueBot("assets/blue_bot")]
+        self.bluebots = [BlueBot("assets/blue_bot",self.botty)]
 
         # print("Playscreen here!")
 
@@ -156,7 +156,7 @@ class PlayScreen(Game):
             if event.type == MOUSEBUTTONDOWN:
                 self.keys_pressed = pygame.mouse.get_pressed()
         if len(self.bluebots) < 20:
-            self.bluebots.append(BlueBot("assets/blue_bot"))
+            self.bluebots.append(BlueBot("assets/blue_bot",self.botty))
         self.mouse_pos = pygame.mouse.get_pos()
         # print("MainScreen Events handled")
 
