@@ -50,28 +50,47 @@ class Botty:
             self.ss.data.frames[self.index].sourceSize.h
         )
         self.pos = pygame.Vector2(WIDTH/2, HEIGHT/2)
+        self.vel = pygame.Vector2(0,0)
+        self.max_vel = 5
+        self.acc = pygame.Vector2(0.0,0.0)
         self.moving = DirectionManager()
 
     def handle_events(self, event):
         if event.type == KEYDOWN:
             if event.key == K_a:    # move left
                 self.moving.left = True
+                self.vel.x = -2
             if event.key == K_d:    # move right
                 self.moving.right = True
+                self.vel.x = 2
             if event.key == K_w:    # move up
                 self.moving.up = True
+                self.vel.y = -2
             if event.key == K_s:    # move down
                 self.moving.down = True
+                self.vel.y = 2
 
         if event.type == KEYUP:
             if event.key == K_a:    # move left
                 self.moving.left = False
+                if self.acc.x < 0:
+                    self.acc.x = 0
+                    self.vel.x = 0
             if event.key == K_d:    # move right
                 self.moving.right = False
+                if self.acc.x > 0:
+                    self.acc.x = 0
+                    self.vel.x = 0
             if event.key == K_w:    # move up
                 self.moving.up = False
+                if self.acc.y < 0:
+                    self.acc.y = 0
+                    self.vel.y = 0
             if event.key == K_s:    # move down
                 self.moving.down = False
+                if self.acc.y > 0:
+                    self.acc.y = 0
+                    self.vel.y = 0
 
     def update(self):
 
@@ -86,13 +105,20 @@ class Botty:
 
         # Movement
         if self.moving.up:
-            self.pos.y -= 1
+            self.acc.y = -0.02
         if self.moving.down:
-            self.pos.y += 1
+            self.acc.y = 0.02
         if self.moving.right:
-            self.pos.x += 1
+            self.acc.x = 0.02
         if self.moving.left:
-            self.pos.x -= 1
+            self.acc.x = -0.02
+        
+        self.vel += self.acc
+        self.pos += self.vel
+        if self.vel.x > self.max_vel:
+            self.vel.x = self.max_vel
+        if self.vel.y > self.max_vel:
+            self.vel.y = self.max_vel
 
     def draw(self, screen: pygame.Surface):
         screen.blit(self.image, self.image.get_rect(center=self.pos))
@@ -103,6 +129,7 @@ class BlueBot(Botty):
         super().__init__(filename)
         self.pos = pygame.Vector2(random.random()*480,random.random()*480)
         self.vel = pygame.Vector2(random.random()*2*random.choice([-1,1]),random.random()*2*random.choice([-1,1]))
+        self.acc = pygame.Vector2(0.01,0.01)
         self.alive = True
     
     def handle_events(self, event):
@@ -123,3 +150,4 @@ class BlueBot(Botty):
             self.alive = False
 
         self.pos += self.vel
+        self.vel += self.acc

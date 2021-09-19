@@ -9,7 +9,7 @@ class Game(object):
 
     WIDTH = 480
     HEIGHT = 480
-    FPS = 60
+    FPS = 120
 
     # Define Colors
     WHITE = (255, 255, 255)
@@ -122,7 +122,8 @@ class PlayScreen(Game):
         self.gotonext = False
 
         # background
-        self.bg = pygame.image.load("assets/tilemap.png")
+        self.bg = pygame.image.load("assets/tilemap.png").convert()
+        self.bg.fill((100,100,100),special_flags=BLEND_RGB_SUB)
 
         # Music
         pygame.mixer.music.load("assets/techno_bass02.ogg")
@@ -154,7 +155,8 @@ class PlayScreen(Game):
                     self.gotonext = True
             if event.type == MOUSEBUTTONDOWN:
                 self.keys_pressed = pygame.mouse.get_pressed()
-        self.bluebots.append(BlueBot("assets/blue_bot"))
+        if len(self.bluebots) < 20:
+            self.bluebots.append(BlueBot("assets/blue_bot"))
         self.mouse_pos = pygame.mouse.get_pos()
         # print("MainScreen Events handled")
 
