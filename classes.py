@@ -54,6 +54,17 @@ class Botty:
         self.max_vel = 5
         self.acc = pygame.Vector2(0.0,0.0)
         self.moving = DirectionManager()
+        self.rect = self.image.get_rect(center=self.pos)
+
+        # Shooting stuff
+        self.shooting = False
+        self.bullets = []
+        self.firing_timer = 0
+        self.firing_rate = 10
+        self.bots_killed = 0
+        self.hp = 100
+        self.hp_cooldown = 0
+        self.is_hit = False
 
     def handle_events(self, event):
         if event.type == KEYDOWN:
@@ -91,8 +102,15 @@ class Botty:
                 if self.acc.y > 0:
                     self.acc.y = 0
                     self.vel.y = 0
+        
+        if event.type == MOUSEBUTTONDOWN:
+            self.shooting = True
+
+        if event.type == MOUSEBUTTONUP:
+            self.shooting = False
 
     def update(self):
+        self.moving.update()
 
         # Animation
         self.time += 1
@@ -119,28 +137,60 @@ class Botty:
             self.vel.x = self.max_vel
         if self.vel.y > self.max_vel:
             self.vel.y = self.max_vel
+        
+        if self.shooting:
+            self.firing_timer += 1
+            if self.firing_timer == self.firing_rate:
+                self.firing_timer = 0
+                self.shoot(pygame.mouse.get_pos())
+        
+        for bullet in self.bullets:
+            if bullet.pos.x > 480 or bullet.pos.x < 0 or bullet.pos.y > 480 or bullet.pos.y < 0:
+                bullet.is_alive = False
+            if bullet.is_alive:
+                bullet.update()
+            else:
+                self.bullets.remove(bullet)
+        
+        self.rect = self.image.get_rect(center=self.pos)
+        self.hp_cooldown += 1
 
     def draw(self, screen: pygame.Surface):
+        for bullet in self.bullets:
+            bullet.draw(screen)
         screen.blit(self.image, self.image.get_rect(center=self.pos))
     
     def shoot(self,mouse_pos:pygame.Vector2):
-        return Bullet(self.pos, mouse_pos)
+        self.bullets.append(Bullet(self.pos, mouse_pos))
 
 class Bullet(object):
 
     def __init__(self,shooter_pos:pygame.Vector2,mouse_pos:pygame.Vector2):
         self.damage = 2
-        self.vel = (mouse_pos - shooter_pos).scale_to_length(3)
+        self.vel = mouse_pos - shooter_pos
+        self.vel.scale_to_length(3)
+        self.pos = pygame.Vector2(shooter_pos.x,shooter_pos.y)
+        self.size = 2
+        self.is_alive = True
+        self.rect = Rect(self.pos.x - self.size,self.pos.y - self.size,self.size*2,self.size*2)
+    def update(self):
+        self.pos += self.vel
+        self.rect.center = self.pos
+    
+    def draw(self,screen):
+        pygame.draw.circle(screen,(255,255,255),self.pos,self.size)
+
 class BlueBot(Botty):
 
     def __init__(self,filename:str,player:Botty):
         super().__init__(filename)
         self.player = player
-        self.pos = pygame.Vector2(random.random()*480,random.random()*480)
+        self.pos = pygame.Vector2(random.random()*20,random.random()*480)
         self.vel = pygame.Vector2((random.random()+0.01)*2*random.choice([-1,1]),(random.random()+0.01)*2*random.choice([-1,1]))
         # self.vel = (player.pos - self.pos).scale_to_length(2)
         self.acc = pygame.Vector2(0.01,0.01)
         self.alive = True
+        self.hp = 50
     
     def handle_events(self, event):
         event = event
@@ -162,3 +212,12 @@ class BlueBot(Botty):
         self.vel = (self.player.pos - self.pos)
         self.vel.scale_to_length(0.5)
         self.pos += self.vel
+
+        self.rect.center = self.pos
+
+    def draw(self,screen):
+        screen.blit(self.image, self.image.get_rect(center=self.pos))
+        if self.is_hit:
+            pygame.draw.circle(screen,(250,250,250),self.pos,8)
+            self.is_hit = False
+

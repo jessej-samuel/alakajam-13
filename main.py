@@ -151,8 +151,6 @@ class PlayScreen(Game):
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     self.running = False
-                if event.key == K_RIGHT:
-                    self.gotonext = True
             if event.type == MOUSEBUTTONDOWN:
                 self.keys_pressed = pygame.mouse.get_pressed()
         if len(self.bluebots) < 20:
@@ -162,14 +160,30 @@ class PlayScreen(Game):
 
     def update(self):
         self.botty.update()
-        self.title_text = self.font.render(
-            "Moving" if self.botty.moving.is_moving else str(round(self.clock.get_fps())), False, self.WHITE)
-        self.botty.moving.update()
+        self.title_text = self.font.render(str("Bots Killed: "+str(self.botty.bots_killed)), False, self.WHITE)
         for bluebot in self.bluebots:
+            if self.botty.rect.colliderect(bluebot.rect):
+                self.botty.is_hit = True
+                if self.botty.hp_cooldown > 200:
+                    self.botty.hp_cooldown = 0
+                    self.botty.hp -= random.randint(2,5)
+            else:
+                self.botty.is_hit = False
+            for bullet in self.botty.bullets:
+                if bluebot.rect.colliderect(bullet.rect):   # on getting hit
+                    bluebot.hp -= bullet.damage
+                    bluebot.is_hit = True
+                    if bluebot.hp <= 0:
+                        bluebot.alive = False
             if not bluebot.alive:
+                self.botty.bots_killed += 1
                 self.bluebots.remove(bluebot)
                 pass
             bluebot.update()
+        self.hp_bar = Rect(0,0,self.botty.hp*2,18)
+        self.hp_bar.topright = (480,0)
+        if self.botty.hp <= 0:
+            self.gotonext = True
 
     def draw(self):
         # self.screen.fill(self.VIOLET)
@@ -178,6 +192,8 @@ class PlayScreen(Game):
             bluebot.draw(self.screen)
         self.botty.draw(self.screen)
         self.screen.blit(self.title_text, (2, 2))
+        pygame.draw.rect(self.screen,(255,0,0),self.hp_bar)
+        
         # print("MainScreen Drawn")
 
 
