@@ -1,9 +1,10 @@
-from os import strerror
 import pygame
 from pygame.locals import *
 from classes import *
 import random
+import time
 
+bots_killed,time_survived = 0,0
 
 class Game(object):
 
@@ -29,6 +30,9 @@ class Game(object):
         self.running = True
         self.font = pygame.font.Font("assets/pixel_reg.ttf", 32)
         self.game_states = gameStates
+
+        self.bots_killed = 0
+        self.time_survived = 0
 
         # print("Game Initialized")
         pass
@@ -69,7 +73,8 @@ class MainScreen(Game):
         self.gotonext = False
 
         # Rendering stuff
-        self.title_text = self.font.render("Main Screen", False, self.WHITE)
+        self.current_time = str(time.localtime().tm_hour)+":"+str(time.localtime().tm_min)
+        self.title_text = self.font.render(self.current_time, False, self.WHITE)
         self.title_image = pygame.image.load("assets/TITLE.png").convert()
         self.title_image.set_colorkey((0, 0, 0))
         self.yoff = 0
@@ -84,7 +89,6 @@ class MainScreen(Game):
         pygame.mixer.music.set_volume(0.01)
         pygame.mixer.music.play(-1)
         # print("MainScreen here!")
-        pass
 
     def handle_events(self):
         # gets all the events which have occured till now and keeps tab of them.
@@ -103,8 +107,10 @@ class MainScreen(Game):
         # print("MainScreen Events handled")
 
     def update(self):
+        time_ = time.localtime()
+        self.current_time = str(time_.tm_hour)+":"+str(time_.tm_min)+":"+str(time_.tm_sec)
+        self.title_text = self.font.render(self.current_time, False, self.WHITE)
         # self.yoff += self.change
-        pass
 
     def draw(self):
         self.screen.fill(self.BLACK)
@@ -164,7 +170,7 @@ class PlayScreen(Game):
         for bluebot in self.bluebots:
             if self.botty.rect.colliderect(bluebot.rect):
                 self.botty.is_hit = True
-                if self.botty.hp_cooldown > 200:
+                if self.botty.hp_cooldown > 20:
                     self.botty.hp_cooldown = 0
                     self.botty.hp -= random.randint(2,5)
             else:
@@ -183,6 +189,9 @@ class PlayScreen(Game):
         self.hp_bar = Rect(0,0,self.botty.hp*2,18)
         self.hp_bar.topright = (480,0)
         if self.botty.hp <= 0:
+            global bots_killed,time_survived
+            bots_killed = self.botty.bots_killed
+            time_survived = self.botty.time_survived
             self.gotonext = True
 
     def draw(self):
@@ -226,11 +235,15 @@ class EndScreen(Game):
         # print("EndScreen Events handled")
 
     def update(self):
-        self.title_text = self.font.render("End Screen", False, self.WHITE)
+        self.title_text = self.font.render("Game Over!", False, self.WHITE)
+        self.kills_text = self.font.render("Bots Killed: "+str(bots_killed), False, self.WHITE)
+        self.time_text = self.font.render("Time Survived: "+str(round(time_survived/self.FPS,2))+" bot seconds", False, self.WHITE)
 
     def draw(self):
-        self.screen.fill((200, 0, 0))
+        self.screen.fill((20, 20, 20))
         self.screen.blit(self.title_text, (2, 2))
+        self.screen.blit(self.kills_text,self.kills_text.get_rect(center = (self.WIDTH/2,self.HEIGHT/2+16)))
+        self.screen.blit(self.time_text,self.time_text.get_rect(center = (self.WIDTH/2,self.HEIGHT/2-16)))
         # print("EndScreen Drawn")
 
 

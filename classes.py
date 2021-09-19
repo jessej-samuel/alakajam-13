@@ -65,6 +65,7 @@ class Botty:
         self.hp = 100
         self.hp_cooldown = 0
         self.is_hit = False
+        self.time_survived = 0
 
     def handle_events(self, event):
         if event.type == KEYDOWN:
@@ -113,6 +114,7 @@ class Botty:
         self.moving.update()
 
         # Animation
+        self.time_survived += 1
         self.time += 1
         if self.time >= self.duration:
             self.time = 0
@@ -153,6 +155,21 @@ class Botty:
                 self.bullets.remove(bullet)
         
         self.rect = self.image.get_rect(center=self.pos)
+
+        # Collision with walls
+        if self.rect.left < 0:
+            self.rect.left = 0
+            self.pos.x = self.rect.centerx
+        if self.rect.right > 480:
+            self.rect.right = 480
+            self.pos.x = self.rect.centerx
+        if self.rect.top < 0:
+            self.rect.top = 0
+            self.pos.y = self.rect.centery
+        if self.rect.bottom > 480:
+            self.rect.bottom = 480
+            self.pos.y = self.rect.centery
+
         self.hp_cooldown += 1
 
     def draw(self, screen: pygame.Surface):
